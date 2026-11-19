@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>you are — share your sound</title>
+  <meta name="description" content="you are — upload your tracks and share your sound with the world." />
+  <meta name="theme-color" content="#0e0f13" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="you are" />
+  <meta property="og:title" content="you are — share your sound" />
+  <meta property="og:description" content="Upload your tracks and share your sound with the world." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="20" height="20">
+          <g fill="#fff">
+            <rect x="12" y="27" width="6" height="10" rx="3" />
+            <rect x="22" y="19" width="6" height="26" rx="3" />
+            <rect x="32" y="13" width="6" height="38" rx="3" />
+            <rect x="42" y="23" width="6" height="18" rx="3" />
+            <rect x="52" y="29" width="6" height="6" rx="3" />
+          </g>
+        </svg>
+      </span>
+      <span class="brand-name">you are</span>
+    </div>
+
+    <div class="search">
+      <input id="searchInput" type="search" placeholder="Search tracks, artists…" autocomplete="off" />
+      <button id="searchBtn" aria-label="Search">⌕</button>
+    </div>
+
+    <div class="auth-controls">
+      <button id="accountBtn" class="btn-ghost">Log in</button>
+      <button id="logoutBtn" class="btn-ghost hidden">Log out</button>
+    </div>
+
+    <button id="uploadOpenBtn" class="btn-primary">＋ Upload</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <p class="hero-kicker">music upload platform</p>
+      <h1>you are <span class="grad-text">the music</span>.</h1>
+      <p class="hero-sub">Upload your tracks, build your library, and share your sound with the world — free, forever.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" data-open-upload>＋ Upload a track</button>
+        <a class="btn-ghost" href="#feed">Browse the feed ↓</a>
+      </div>
+    </section>
+
+    <section class="filters">
+      <button class="chip active" data-sort="new">Newest</button>
+      <button class="chip" data-sort="popular">Most played</button>
+      <button class="chip" data-sort="az">A–Z</button>
+      <span id="trackCount" class="track-count"></span>
+    </section>
+
+    <section id="feed" class="feed"></section>
+
+    <section id="emptyState" class="empty hidden">
+      <div class="empty-icon">🎧</div>
+      <h2>No tracks yet</h2>
+      <p>Be the first — hit <strong>Upload</strong> and share your sound.</p>
+    </section>
+
+    <footer class="site-footer">
+      <div class="brand brand-sm">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="16" height="16">
+            <g fill="#fff">
+              <rect x="12" y="27" width="6" height="10" rx="3" />
+              <rect x="22" y="19" width="6" height="26" rx="3" />
+              <rect x="32" y="13" width="6" height="38" rx="3" />
+              <rect x="42" y="23" width="6" height="18" rx="3" />
+              <rect x="52" y="29" width="6" height="6" rx="3" />
+            </g>
+          </svg>
+        </span>
+        <span class="brand-name">you are</span>
+      </div>
+      <nav class="footer-links">
+        <a href="terms.html">Terms of Service</a>
+        <a href="copyright.html">Copyright / DMCA</a>
+      </nav>
+      <p class="footer-founder">Founded by <strong>Darnell L King Cason</strong></p>
+      <p class="footer-tag">share your sound</p>
+      <p class="footer-copy">© 2026 you are</p>
+    </footer>
+  </main>
+
+  <!-- Upload modal -->
+  <div id="uploadModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2>Upload a track</h2>
+        <button id="uploadCloseBtn" class="icon-btn" aria-label="Close">✕</button>
+      </div>
+
+      <form id="uploadForm">
+        <div id="dropZone" class="drop-zone">
+          <input id="fileInput" type="file" accept="audio/*,.mp3,.wav,.flac,.m4a,.aac,.ogg,.opus,.wma,.aiff,.aif,.ape,.amr,.au,.mka,.mid,.midi,.ac3,.mpc,.mp4,.webm" hidden />
+          <div class="drop-idle">
+            <div class="drop-icon">🎵</div>
+            <p><strong>Drop an audio file</strong> or click to browse</p>
+            <p class="drop-hint">any audio format (mp3 · wav · flac · wma · aiff · ogg · m4a · mid …) — up to 60 MB</p>
+          </div>
+          <div id="dropSelected" class="drop-selected hidden">
+            <div class="drop-icon">✅</div>
+            <p id="selectedName"></p>
+            <p class="drop-hint">Click to choose a different file</p>
+          </div>
+        </div>
+
+        <label>Track title
+          <input name="title" type="text" placeholder="My new track" maxlength="120" />
+        </label>
+        <label>Artist
+          <input name="artist" type="text" placeholder="Your name" maxlength="80" />
+        </label>
+        <div class="row2">
+          <label>Genre
+            <input name="genre" type="text" placeholder="Electronic, hip-hop…" maxlength="40" />
+          </label>
+          <label>Description
+            <input name="description" type="text" placeholder="Optional note" maxlength="200" />
+          </label>
+        </div>
+
+        <label>Get tips from listeners (optional)
+          <input name="payout" type="text" placeholder="$cashtag, PayPal link, or Venmo handle" maxlength="80" />
+        </label>
+
+        <div class="media-row">
+          <label class="media-pick" id="coverPick">
+            <input type="file" id="coverInput" accept="image/*" hidden />
+            <span class="media-icon">🖼️</span>
+            <span id="coverLabel">Cover art — optional</span>
+          </label>
+          <label class="media-pick" id="videoPick">
+            <input type="file" id="videoInput" accept="video/*,.mp4,.webm,.mov,.m4v,.avi,.mkv,.wmv,.mpg,.mpeg,.3gp,.flv" hidden />
+            <span class="media-icon">🎬</span>
+            <span id="videoLabel">Music video — mp4/webm · ≤100 MB</span>
+          </label>
+        </div>
+
+        <label class="rights-check">
+          <input type="checkbox" id="rightsCheck" />
+          <span>I own this track or have the rights to upload it, and I agree to the <a href="terms.html" target="_blank">Terms of Service</a> and <a href="copyright.html" target="_blank">Copyright Policy</a>.</span>
+        </label>
+
+        <div id="uploadProgress" class="progress hidden"><div id="progressBar" class="progress-bar"></div></div>
+        <p id="uploadError" class="error hidden"></p>
+
+        <div class="modal-actions">
+          <button type="button" id="uploadCancelBtn" class="btn-ghost">Cancel</button>
+          <button type="submit" id="uploadSubmitBtn" class="btn-primary" disabled>Publish</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Video modal -->
+  <div id="videoModal" class="modal hidden">
+    <div class="video-card">
+      <div class="video-head">
+        <h2 id="videoTitle">—</h2>
+        <button id="videoCloseBtn" class="icon-btn" aria-label="Close video">✕</button>
+      </div>
+      <video id="videoPlayer" controls playsinline preload="metadata"></video>
+    </div>
+  </div>
+
+  <!-- Comments / fan-wall modal -->
+  <div id="threadModal" class="modal hidden">
+    <div class="modal-card thread-card">
+      <div class="modal-head">
+        <h2 id="threadTitle">Comments</h2>
+        <div class="modal-head-actions">
+          <button id="threadTipBtn" class="thread-btn hidden">💛 Tip</button>
+          <button id="threadCloseBtn" class="icon-btn" aria-label="Close">✕</button>
+        </div>
+      </div>
+
+      <div id="reactionBar" class="reaction-bar hidden"></div>
+
+      <div id="threadList" class="thread-list"></div>
+
+      <div class="thread-form">
+        <div class="thread-row">
+          <span id="threadAs" class="thread-as"></span>
+          <div id="emojiPicker" class="emoji-picker"></div>
+        </div>
+        <textarea id="threadText" rows="2" maxlength="500" placeholder="Say something nice…"></textarea>
+        <div class="thread-actions">
+          <span id="threadHint" class="thread-hint"></span>
+          <button id="threadPostBtn" class="btn-primary">Post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tip modal -->
+  <div id="tipModal" class="modal hidden">
+    <div class="modal-card tip-card">
+      <div class="modal-head">
+        <h2>💛 Send a tip</h2>
+        <button id="tipCloseBtn" class="icon-btn" aria-label="Close">✕</button>
+      </div>
+
+      <p class="tip-artist">Support <strong id="tipArtistName">—</strong> directly</p>
+
+      <div class="tip-amounts" id="tipAmounts">
+        <button class="tip-amt active" data-amt="1">$1</button>
+        <button class="tip-amt" data-amt="2">$2</button>
+        <button class="tip-amt" data-amt="5">$5</button>
+        <button class="tip-amt" data-amt="10">$10</button>
+        <input id="tipCustom" type="number" min="1" max="1000" placeholder="Other $" />
+      </div>
+
+      <div id="tipPayArea" class="tip-pay">
+        <div class="tip-handle-row">
+          <span id="tipHandle" class="tip-handle">—</span>
+          <button id="tipCopyBtn" class="btn-ghost">Copy</button>
+        </div>
+        <a id="tipOpenBtn" class="btn-primary tip-open" target="_blank" rel="noopener">Open payment app →</a>
+      </div>
+
+      <p id="tipNoHandle" class="tip-nohandle hidden">This artist hasn't set up tips yet — artists add their payout handle when uploading.</p>
+
+      <p class="tip-note">100% goes to the artist. <em>you are</em> takes no cut.</p>
+    </div>
+  </div>
+
+  <!-- Auth modal (login / sign up) -->
+  <div id="authModal" class="modal hidden">
+    <div class="modal-card auth-card">
+      <div class="modal-head">
+        <h2 id="authTitle">Log in</h2>
+        <button id="authCloseBtn" class="icon-btn" aria-label="Close">✕</button>
+      </div>
+
+      <div class="auth-tabs">
+        <button type="button" id="authTabLogin" class="auth-tab active">Log in</button>
+        <button type="button" id="authTabSignup" class="auth-tab">Sign up</button>
+      </div>
+
+      <form id="authForm">
+        <label>Username
+          <input id="authUser" type="text" placeholder="yourname" autocomplete="username" maxlength="30" />
+        </label>
+        <label>Password
+          <input id="authPass" type="password" placeholder="••••••••" autocomplete="current-password" maxlength="100" />
+        </label>
+        <p id="authError" class="error hidden"></p>
+
+        <div class="modal-actions">
+          <button type="button" id="authCancelBtn" class="btn-ghost">Cancel</button>
+          <button type="submit" id="authSubmitBtn" class="btn-primary">Log in</button>
+        </div>
+      </form>
+
+      <p class="auth-note">Free forever — your account, your tracks, your fans.</p>
+    </div>
+  </div>
+
+  <!-- Player bar -->
+  <footer id="player" class="player hidden">
+    <div class="player-info">
+      <div id="npTitle" class="np-title">—</div>
+      <div id="npArtist" class="np-artist">—</div>
+    </div>
+
+    <div class="player-controls">
+      <button id="prevBtn" class="ctl" aria-label="Previous">⏮</button>
+      <button id="playBtn" class="ctl ctl-main" aria-label="Play/Pause">▶</button>
+      <button id="nextBtn" class="ctl" aria-label="Next">⏭</button>
+    </div>
+
+    <div class="player-timeline">
+      <span id="curTime" class="time">0:00</span>
+      <input id="seek" type="range" min="0" max="1000" value="0" step="1" />
+      <span id="durTime" class="time">0:00</span>
+    </div>
+
+    <div class="player-volume">
+      <button id="muteBtn" class="ctl" aria-label="Mute">🔊</button>
+      <input id="volume" type="range" min="0" max="100" value="80" />
+    </div>
+  </footer>
+
+  <audio id="audio" preload="auto"></audio>
+  <script src="app.js"></script>
+</body>
+</html>

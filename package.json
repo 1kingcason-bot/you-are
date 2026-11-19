@@ -1,0 +1,15 @@
+{
+  "name": "you-are",
+  "version": "0.1.0",
+  "description": "you are — a music upload platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1172.0",
+    "@aws-sdk/s3-request-presigner": "^3.1172.0",
+    "express": "^4.21.2",
+    "multer": "^2.0.2"
+  }
+}
