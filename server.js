@@ -167,21 +167,8 @@ app.get('/api/auth/me', (req, res) => {
 });
 
 // ---------- upload ----------
-// accept essentially every audio/video container format browsers + users throw at us
-const AUDIO_MIME = {
-  '.mp3': 'audio/mpeg', '.wav': 'audio/wav', '.ogg': 'audio/ogg', '.oga': 'audio/ogg',
-  '.opus': 'audio/ogg', '.m4a': 'audio/mp4', '.m4b': 'audio/mp4', '.mp4': 'audio/mp4',
-  '.flac': 'audio/flac', '.aac': 'audio/aac', '.webm': 'audio/webm', '.wma': 'audio/x-ms-wma',
-  '.aiff': 'audio/aiff', '.aif': 'audio/aiff', '.ape': 'audio/x-ape', '.amr': 'audio/amr',
-  '.au': 'audio/basic', '.snd': 'audio/basic', '.mka': 'audio/x-matroska',
-  '.mid': 'audio/midi', '.midi': 'audio/midi', '.ac3': 'audio/ac3', '.mpc': 'audio/musepack'
-};
-const VIDEO_MIME = {
-  '.mp4': 'video/mp4', '.m4v': 'video/mp4', '.webm': 'video/webm', '.mov': 'video/quicktime',
-  '.avi': 'video/x-msvideo', '.mkv': 'video/x-matroska', '.wmv': 'video/x-ms-wmv',
-  '.mpg': 'video/mpeg', '.mpeg': 'video/mpeg', '.flv': 'video/x-flv',
-  '.3gp': 'video/3gpp', '.mts': 'video/mp2t', '.ts': 'video/mp2t'
-};
+// content types live in the storage layer (shared with seed-b2.js)
+const { AUDIO_MIME, VIDEO_MIME, IMAGE_MIME } = storage;
 
 const diskStorage = multer.diskStorage({
   destination: UPLOADS_DIR,
@@ -192,11 +179,7 @@ const diskStorage = multer.diskStorage({
 });
 
 const AUDIO_EXT = Object.keys(AUDIO_MIME);
-const IMAGE_EXT = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-const IMAGE_MIME = {
-  '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
-  '.gif': 'image/gif', '.webp': 'image/webp'
-};
+const IMAGE_EXT = Object.keys(IMAGE_MIME);
 const VIDEO_EXT = Object.keys(VIDEO_MIME);
 
 const upload = multer({

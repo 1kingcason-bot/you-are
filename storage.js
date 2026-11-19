@@ -14,6 +14,26 @@ const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, 'data');
 const UPLOADS_DIR = path.join(ROOT, 'uploads');
 
+// content types for everything we store (shared with server.js and seed-b2.js)
+const AUDIO_MIME = {
+  '.mp3': 'audio/mpeg', '.wav': 'audio/wav', '.ogg': 'audio/ogg', '.oga': 'audio/ogg',
+  '.opus': 'audio/ogg', '.m4a': 'audio/mp4', '.m4b': 'audio/mp4', '.mp4': 'audio/mp4',
+  '.flac': 'audio/flac', '.aac': 'audio/aac', '.webm': 'audio/webm', '.wma': 'audio/x-ms-wma',
+  '.aiff': 'audio/aiff', '.aif': 'audio/aiff', '.ape': 'audio/x-ape', '.amr': 'audio/amr',
+  '.au': 'audio/basic', '.snd': 'audio/basic', '.mka': 'audio/x-matroska',
+  '.mid': 'audio/midi', '.midi': 'audio/midi', '.ac3': 'audio/ac3', '.mpc': 'audio/musepack'
+};
+const VIDEO_MIME = {
+  '.mp4': 'video/mp4', '.m4v': 'video/mp4', '.webm': 'video/webm', '.mov': 'video/quicktime',
+  '.avi': 'video/x-msvideo', '.mkv': 'video/x-matroska', '.wmv': 'video/x-ms-wmv',
+  '.mpg': 'video/mpeg', '.mpeg': 'video/mpeg', '.flv': 'video/x-flv',
+  '.3gp': 'video/3gpp', '.mts': 'video/mp2t', '.ts': 'video/mp2t'
+};
+const IMAGE_MIME = {
+  '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
+  '.gif': 'image/gif', '.webp': 'image/webp'
+};
+
 const CLOUD = Boolean(
   process.env.B2_KEY_ID && process.env.B2_APP_KEY && process.env.B2_BUCKET && process.env.B2_REGION
 );
@@ -85,7 +105,8 @@ function mediaKey(fileName) {
 }
 
 // move a finished local upload into the bucket, then free the local disk
-async function putMedia(localPath, contentType) {
+// (pass keepLocal = true to leave the local copy in place, e.g. during seeding)
+async function putMedia(localPath, contentType, keepLocal) {
   if (!CLOUD) return;
   const stat = await fs.promises.stat(localPath);
   await s3.send(new PutObjectCommand({
@@ -95,7 +116,7 @@ async function putMedia(localPath, contentType) {
     ContentLength: stat.size,
     ContentType: contentType || 'application/octet-stream'
   }));
-  await fs.promises.rm(localPath, { force: true });
+  if (!keepLocal) await fs.promises.rm(localPath, { force: true });
 }
 
 async function deleteMedia(fileName) {
@@ -124,4 +145,4 @@ async function signedUrl(fileName) {
   return getSignedUrl(s3, command, { expiresIn: 3600 });
 }
 
-module.exports = { CLOUD, readJson, writeJson, putMedia, deleteMedia, signedUrl, DATA_DIR, UPLOADS_DIR };
+module.exports = { CLOUD, readJson, writeJson, putMedia, deleteMedia, signedUrl, DATA_DIR, UPLOADS_DIR, AUDIO_MIME, VIDEO_MIME, IMAGE_MIME };
