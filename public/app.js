@@ -149,10 +149,10 @@ function probeDuration(track, card) {
   a.preload = 'metadata';
   a.src = track.url;
   a.addEventListener('loadedmetadata', () => {
-    durationCache[track.id] = a.duration;
-    const target = feed.querySelector(`[data-duration-id="${track.id}"]`);
+    const d = a.duration; // capture before releasing src, which resets duration to NaN
+    durationCache[track.id] = d;
     a.src = ''; // release
-    if (el.isConnected) el.textContent = fmtTime(a.duration);
+    if (el.isConnected) el.textContent = fmtTime(d);
   }, { once: true });
 }
 
